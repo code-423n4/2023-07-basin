@@ -47,7 +47,7 @@ Under "SPONSORS ADD INFO HERE" heading below, include the following:
 
 ---
 
-# Beanstalk audit details
+# Basin audit details
 - Total Prize Pool: $40,000 USDC 
   - HM awards: $27,637.50 USDC 
   - Analysis awards: $1,675 USDC 
