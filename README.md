@@ -1,3 +1,5 @@
+### Table of Contents
+
 - [Basin Contest Details](#basin-contest-details)
 - [Basin Introduction](#basin-introduction)
     - [Code Walkthrough](#code-walkthrough)
@@ -118,7 +120,7 @@ All code for Basin can be found in the [src/](src/) folder. Each contract has do
 | [libraries/LibWellConstructor.sol](src/libraries/LibWellConstructor.sol)       | 42         | Contains logic for constructing a Well.                                                                                           |                                 |
 | [pumps/MultiFlowPump.sol](src/pumps/MultiFlowPump.sol)                         | 222        | Stores a geometric EMA and cumulative geometric SMA for each reserve. (See Multi Flow whitepaper) | `ABDKMathQuad`, `LibBytes16`, `LibLastReserveBytes`, `SafeCast` |
 | [Aquifer.sol](src/Aquifer.sol)                                                 | 53         | A permissionless Well registry and factory.                                                       | `LibClone`, `SafeCast`, `ReentrancyGuard`                       |
-| [Well.sol](src/Well.sol)                                                       | 368        |  constant function AMM allowing the provisioning of liquidity into a single pooled on-chain liquidity position. |  `LibBytes`, `ClonePlus`, `SafeCast`, `SafeERC20`, `ReentrancyGuardUpgradeable`, `ERC20PermitUpgradeable`  |
+| [Well.sol](src/Well.sol)                                                       | 368        | A constant function AMM allowing the provisioning of liquidity into a single pooled on-chain liquidity position. |  `LibBytes`, `ClonePlus`, `SafeCast`, `SafeERC20`, `ReentrancyGuardUpgradeable`, `ERC20PermitUpgradeable`  |
 
 **Out of Scope**
 
