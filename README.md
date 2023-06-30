@@ -49,10 +49,9 @@ Well designed open source protocols enable anyone to (1) compose existing compon
 
 Check out the following code walkthrough of Basin, starting at 29:00: https://youtu.be/SEM2AJwTvfg?t=1740
 
-## Automated Findings / Publicly Known Issues
-Automated findings output for the audit can be found [here](add link to report) within 24 hours of audit opening.
-
 ## Past Audits and Known Issues
+
+Automated findings output for the audit can be found here (link TBD) within 24 hours of audit opening.
 
 Check out these audits reports for known issues and acknowledged findings in Basin:
 
@@ -106,8 +105,6 @@ An example factory implementation is provided in [{Aquifer}](https://github.com/
 
 ## Scope
 
-*List all files in scope in the table below (along with hyperlinks) -- and feel free to add notes here to emphasize areas of focus.*
-
 All code for Basin can be found in the [src/](https://github.com/code-423n4/2023-07-basin/tree/main/src) folder. Each contract has documentation at the top of the respective file.
 
 **In Scope**
@@ -152,7 +149,6 @@ forge build
 ## Tests
 
 Prior to running tests, you should set up your environment. At present this repository contains fork tests against ETH mainnet; your environment will need an `MAINNET_RPC_URL` key to run these tests. This is used in `IntegrationTestGasComparisons.sol`.
-
 
 Additionally, the `--ffi` cheatcode is used to verify certain actions. Due to the arbitrary code execution nature of `--ffi`, it is advised to review the executed code prior to running. 
 
