@@ -41,7 +41,7 @@ tokens and (2) includes a registry to verify exchange implementations.
 
 Well designed open source protocols enable anyone to (1) compose existing components together, (2) develop new components when existing ones fail to meet the needs of users or are cost-inefficient and (3) verify the proper use of existing components in a simple fashion. Basin allows for anyone to compose new and existing (1) *Well Functions* (i.e. exchange functions), (2) *Pumps* (i.e., network native oracles) and (3) *Well Implementations* (i.e., exchange implementations) to create a *Well* (i.e., a customized liquidity pool). *Aquifers* (i.e., Well registries) store a mapping from Well addresses to Well Implementations to enable verification of a Well Implementation given a Well address.
 
-**The whitepapers for Basin and Multi Flow Pump are by far the best resources for learning about how the DEX architecture is intended the work, the motivations for building them, detailed overviews of the math that is implemented, etc. We highly recommend reading these drafts as you begin your review:**
+**The whitepapers for Basin and Multi Flow Pump are by far the best resources for learning about how the DEX architecture is intended the work, the motivations for building it, detailed overviews of the math that is implemented, etc. We highly recommend reading these drafts as you begin your review:**
 * [Basin Whitepaper](https://basin.exchange/basin.pdf)
 * [Multi Flow Pump Whitepaper](https://basin.exchange/multi-flow-pump.pdf)
 
@@ -103,15 +103,31 @@ These audits reports may provide insight on known issues and acknowledged findin
 
 *List all files in scope in the table below (along with hyperlinks) -- and feel free to add notes here to emphasize areas of focus.*
 
-*For line of code counts, we recommend using [cloc](https://github.com/AlDanial/cloc).* 
+All code for Basin can be found in the [src/](src/) folder. Each contract has documentation at the top of the respective file.
 
-| Contract | SLOC | Purpose | Libraries used |  
-| ----------- | ----------- | ----------- | ----------- |
-| [contracts/folder/sample.sol](contracts/folder/sample.sol) | 123 | This contract does XYZ | [`@openzeppelin/*`](https://openzeppelin.com/contracts/) |
+**In Scope**
+
+| Contract                                                                       | SLOC       | Purpose                                                                              | Libraries used                                                               |  
+|:-------------------------------------------------------------------------------|:-----------|:-------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------|
+| [functions/ConstantProduct2.sol](src/functions/ConstantProduct2.sol)           | 29         | Gas efficient Constant Product pricing function for Wells with 2 tokens.             | `LibMath`                                                                    |
+| [functions/ProportionalLPToken2.sol](src/functions/ProportionalLPToken2.sol)   | 9          | Defines a proportional relationship between the supply of LP token and the amount of each underlying token for a two-token Well.  |                                 |
+| [libraries/LibBytes.sol](src/libraries/LibBytes.sol)                           | 73         | Contains byte operations used during storage reads & writes.                                                                      |                                 |
+| [libraries/LibBytes16.sol](src/libraries/LibBytes16.sol)                       | 58         | Contains byte operations used during storage reads & writes for Pumps.                                                            |                                 |
+| [libraries/LibContractInfo.sol](src/libraries/LibContractInfo.sol)             | 29         | Contains logic to call functions that return information about a given contract.                                                  |                                 |
+| [libraries/LibLastReserveBytes.sol](src/libraries/LibLastReserveBytes.sol)     | 88         | Contains byte operations used during storage reads & writes for Pumps.                                                            |                                 |
+| [libraries/LibWellConstructor.sol](src/libraries/LibWellConstructor.sol)       | 42         | Contains logic for constructing a Well.                                                                                           |                                 |
+| [pumps/MultiFlowPump.sol](src/pumps/MultiFlowPump.sol)                         | 222        | Stores a geometric EMA and cumulative geometric SMA for each reserve. (See Multi Flow whitepaper) | `ABDKMathQuad`, `LibBytes16`, `LibLastReserveBytes`, `SafeCast` |
+| [Aquifer.sol](src/Aquifer.sol)                                                 | 53         | A permissionless Well registry and factory.                                                       | `LibClone`, `SafeCast`, `ReentrancyGuard`                       |
+| [Well.sol](src/Well.sol)                                                       | 368        |  constant function AMM allowing the provisioning of liquidity into a single pooled on-chain liquidity position. |  `LibBytes`, `ClonePlus`, `SafeCast`, `SafeERC20`, `ReentrancyGuardUpgradeable`, `ERC20PermitUpgradeable`  |
 
 **Out of Scope**
 
-Constant Product.sol
+* functions/ConstantProduct.sol
+* functions/ProportionalLPToken.sol
+* libraries/ABDKMathQuad.sol
+* libraries/LibClone.sol
+* libraries/LibMath.sol
+* utils/
 
 ## Setup
 
