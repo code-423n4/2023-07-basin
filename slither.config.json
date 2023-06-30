@@ -1,0 +1,5 @@
+{
+  "filter_paths": "(lib/|mocks/|test/)",
+  "solc_remaps": "@=node_modules/@"
+}
+  
