@@ -103,3 +103,24 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Compiler files
+cache/
+out/
+
+# Ignores development broadcast logs
+/broadcast
+
+# Dotenv file
+.env
+
+# Ignore generated CSV with DEX gas comparisons
+.dex-comparisons.csv
+
+# Other
+node_modules
+stash
+lcov.info
+.DS_Store
+test/output/
+env/
