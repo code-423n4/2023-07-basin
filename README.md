@@ -3,18 +3,16 @@
 - [Basin Contest Details](#basin-contest-details)
 - [Basin Introduction](#basin-introduction)
     - [Code Walkthrough](#code-walkthrough)
+    - [Past Audits and Known Issues](#past-audits-and-known-issues)
     - [Architecture Diagram](#architecture-diagram)
     - [Documentation](#documentation)
     - [Motivation](#motivation)
-    - [Past Audits](#past-audits)
 - [C4 Contest](#c4-contest)
     - [Scope](#scope)
     - [Setup](#setup)
     - [Tests](#tests)
     - [Scoping Details](#scoping-details)
 - [Contact Us](#contact-us)
-
-<img src="https://github.com/BeanstalkFarms/Beanstalk-Brand-Assets/blob/main/basin/basin(green)-512x512.png" alt="Basin logo" align="right" width="120" />
 
 # Basin Contest Details
 - Total Prize Pool: $40,000 USDC 
@@ -51,6 +49,18 @@ Well designed open source protocols enable anyone to (1) compose existing compon
 
 Check out the following code walkthrough of Basin, starting at 29:00: https://youtu.be/SEM2AJwTvfg?t=1740
 
+## Automated Findings / Publicly Known Issues
+Automated findings output for the audit can be found [here](add link to report) within 24 hours of audit opening.
+
+## Past Audits and Known Issues
+
+Check out these audits reports for known issues and acknowledged findings in Basin:
+
+* [Cyfrin Basin Audit](https://basin.exchange/cyfrin-basin-audit.pdf)
+* [Halborn Basin Audit](https://basin.exchange/halborn-basin-audit.pdf)
+
+See the [Motivations](https://github.com/code-423n4/2023-07-basin#motivation) for additional known attack vectors.
+
 ## Architecture Diagram
 
 Architecture diagram of Basin: https://www.figma.com/file/u3IUVxVF8IOfYVIUEYc3sm/Technical-Graphic%3A-Wells-System-Architecture?node-id=0%3A1&t=fjHB8lY8WsrwyhZj-0
@@ -59,12 +69,12 @@ Architecture diagram of Basin: https://www.figma.com/file/u3IUVxVF8IOfYVIUEYc3sm
 
 A draft of the Basin whitepaper is available [here](https://basin.exchange/basin.pdf). A draft of the Multi Flow Pump whitepaper is available [here](https://basin.exchange/multi-flow-pump.pdf).
 
-A [{Well}](/src/Well.sol) is a constant function AMM that allows the provisioning of liquidity into a single pooled on-chain liquidity position.
+A [{Well}](https://github.com/code-423n4/2023-07-basin/blob/main/src/Well.sol) is a constant function AMM that allows the provisioning of liquidity into a single pooled on-chain liquidity position.
 
 Each Well is defined by its Tokens, Well function, and Pump.
 - The **Tokens** define the set of ERC-20 tokens that can be exchanged in the Well.
-- The **Well function** defines an invariant relationship between the Well's reserves and the supply of LP tokens. See [{IWellFunction}](/src//interfaces/IWellFunction.sol).
-- **Pumps** are an on-chain oracles that are updated upon each interaction with the Well. See [{IPump}](/src/interfaces/IPump.sol).
+- The **Well function** defines an invariant relationship between the Well's reserves and the supply of LP tokens. See [{IWellFunction}](https://github.com/code-423n4/2023-07-basin/blob/main/src/interfaces/IWellFunction.sol).
+- **Pumps** are an on-chain oracles that are updated upon each interaction with the Well. See [{IPump}](https://github.com/code-423n4/2023-07-basin/blob/main/src/interfaces/IPump.sol).
 
 A Well's tokens, Well function, and Pump are stored as immutable variables during Well construction to prevent unnecessary SLOAD calls during operation.
 
@@ -78,7 +88,7 @@ Well functions and Pumps can independently choose to be stateful or stateless.
 
 Including a Pump is optional.
 
-Each Well implements ERC-20, ERC-2612 and the [{IWell}](/src/interfaces/IWell.sol) interface.
+Each Well implements ERC-20, ERC-2612 and the [{IWell}](https://github.com/code-423n4/2023-07-basin/blob/main/src/interfaces/IWell.sol) interface.
 
 ## Motivation
 
@@ -90,14 +100,7 @@ However, this architecture shifts much of the attack surface area to the Well's 
 
 The Wells architecture aims to outline a simple interface for composable AMMs and leave the process of evaluating a given Well's trustworthiness as the responsibility of the user. To this end, future work may focus on development of on-chain Well registries and factories which create or highlight Wells composed of known components.
 
-An example factory implementation is provided in [{Aquifer}](/src/Auquifer.sol) without any opinion regarding the trustworthiness of Well functions and the Pumps using it. Wells are not required to be deployed via this mechanism.
-
-## Past Audits
-
-These audits reports may provide insight on known issues and acknowledged findings in Basin:
-
-* [Cyfrin Basin Audit](https://basin.exchange/cyfrin-basin-audit.pdf)
-* [Halborn Basin Audit](https://basin.exchange/halborn-basin-audit.pdf)
+An example factory implementation is provided in [{Aquifer}](https://github.com/code-423n4/2023-07-basin/blob/main/src/Aquifer.sol) without any opinion regarding the trustworthiness of Well functions and the Pumps using it. Wells are not required to be deployed via this mechanism.
 
 # C4 Contest
 
@@ -105,22 +108,25 @@ These audits reports may provide insight on known issues and acknowledged findin
 
 *List all files in scope in the table below (along with hyperlinks) -- and feel free to add notes here to emphasize areas of focus.*
 
-All code for Basin can be found in the [src/](src/) folder. Each contract has documentation at the top of the respective file.
+All code for Basin can be found in the [src/](https://github.com/code-423n4/2023-07-basin/tree/main/src) folder. Each contract has documentation at the top of the respective file.
 
 **In Scope**
 
-| Contract                                                                       | SLOC       | Purpose                                                                              | Libraries used                                                               |  
-|:-------------------------------------------------------------------------------|:-----------|:-------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------|
-| [functions/ConstantProduct2.sol](src/functions/ConstantProduct2.sol)           | 29         | Gas efficient Constant Product pricing function for Wells with 2 tokens.             | `LibMath`                                                                    |
-| [functions/ProportionalLPToken2.sol](src/functions/ProportionalLPToken2.sol)   | 9          | Defines a proportional relationship between the supply of LP token and the amount of each underlying token for a two-token Well.  |                                 |
-| [libraries/LibBytes.sol](src/libraries/LibBytes.sol)                           | 73         | Contains byte operations used during storage reads & writes.                                                                      |                                 |
-| [libraries/LibBytes16.sol](src/libraries/LibBytes16.sol)                       | 58         | Contains byte operations used during storage reads & writes for Pumps.                                                            |                                 |
-| [libraries/LibContractInfo.sol](src/libraries/LibContractInfo.sol)             | 29         | Contains logic to call functions that return information about a given contract.                                                  |                                 |
-| [libraries/LibLastReserveBytes.sol](src/libraries/LibLastReserveBytes.sol)     | 88         | Contains byte operations used during storage reads & writes for Pumps.                                                            |                                 |
-| [libraries/LibWellConstructor.sol](src/libraries/LibWellConstructor.sol)       | 42         | Contains logic for constructing a Well.                                                                                           |                                 |
-| [pumps/MultiFlowPump.sol](src/pumps/MultiFlowPump.sol)                         | 222        | Stores a geometric EMA and cumulative geometric SMA for each reserve. (See Multi Flow whitepaper) | `ABDKMathQuad`, `LibBytes16`, `LibLastReserveBytes`, `SafeCast` |
-| [Aquifer.sol](src/Aquifer.sol)                                                 | 53         | A permissionless Well registry and factory.                                                       | `LibClone`, `SafeCast`, `ReentrancyGuard`                       |
-| [Well.sol](src/Well.sol)                                                       | 368        | A constant function AMM allowing the provisioning of liquidity into a single pooled on-chain liquidity position. |  `LibBytes`, `ClonePlus`, `SafeCast`, `SafeERC20`, `ReentrancyGuardUpgradeable`, `ERC20PermitUpgradeable`  |
+| Contract                                                                                                                             | SLOC       | Purpose                                                                              | Libraries used                                                               |  
+|:-------------------------------------------------------------------------------------------------------------------------------------|:-----------|:-------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------|
+|_Contracts (5)_|
+| [functions/ConstantProduct2.sol](https://github.com/code-423n4/2023-07-basin/blob/main/src/functions/ConstantProduct2.sol)           | 47         | Gas efficient Constant Product pricing function for Wells with 2 tokens.             | `LibMath`                                                                    |
+| [functions/ProportionalLPToken2.sol](https://github.com/code-423n4/2023-07-basin/blob/main/src/functions/ProportionalLPToken2.sol)   | 14          | Defines a proportional relationship between the supply of LP token and the amount of each underlying token for a two-token Well. |                                 |
+| [pumps/MultiFlowPump.sol](https://github.com/code-423n4/2023-07-basin/blob/main/src/pumps/MultiFlowPump.sol)                         | 231        | Stores a geometric EMA and cumulative geometric SMA for each reserve. (See Multi Flow whitepaper) | `ABDKMathQuad`, `LibBytes16`, `LibLastReserveBytes`, `SafeCast` |
+| [Aquifer.sol](https://github.com/code-423n4/2023-07-basin/blob/main/src/Aquifer.sol)                                                 | 58         | A permissionless Well registry and factory.                                                       | `LibClone`, `SafeCast`, `ReentrancyGuard`                       |
+| [Well.sol](https://github.com/code-423n4/2023-07-basin/blob/main/src/Well.sol)                                                       | 486        | A constant function AMM allowing the provisioning of liquidity into a single pooled on-chain liquidity position. |  `LibBytes`, `ClonePlus`, `SafeCast`, `SafeERC20`, `ReentrancyGuardUpgradeable`, `ERC20PermitUpgradeable`  |
+|_Libraries (5)_|
+| [libraries/LibBytes.sol](https://github.com/code-423n4/2023-07-basin/blob/main/src/libraries/LibBytes.sol)                           | 73         | Contains byte operations used during storage reads & writes.                                                                      |                                 |
+| [libraries/LibBytes16.sol](https://github.com/code-423n4/2023-07-basin/blob/main/src/libraries/LibBytes16.sol)                       | 58         | Contains byte operations used during storage reads & writes for Pumps.                                                            |                                 |
+| [libraries/LibContractInfo.sol](https://github.com/code-423n4/2023-07-basin/blob/main/src/libraries/LibContractInfo.sol)             | 29         | Contains logic to call functions that return information about a given contract.                                                  |                                 |
+| [libraries/LibLastReserveBytes.sol](https://github.com/code-423n4/2023-07-basin/blob/main/src/libraries/LibLastReserveBytes.sol)     | 92         | Contains byte operations used during storage reads & writes for Pumps.                                                            |                                 |
+| [libraries/LibWellConstructor.sol](https://github.com/code-423n4/2023-07-basin/blob/main/src/libraries/LibWellConstructor.sol)       | 57         | Contains logic for constructing a Well.                                                                                           |                                 |
+| Total (over 10 files):                                                                                                               | 1145       |                                                                                                                                   |                                 |
 
 **Out of Scope**
 
@@ -176,7 +182,7 @@ to omit invariant tests:
 ```
 - If you have a public code repo, please share it here:  https://github.com/BeanstalkFarms/Basin (made private during the C4 contest)
 - How many contracts are in scope?:   10
-- Total SLoC for these contracts?:  971
+- Total SLoC for these contracts?:  1145
 - How many external imports are there?: 5 
 - How many separate interfaces and struct definitions are there for the contracts within scope?:  5 interfaces, 1 struct
 - Does most of your code generally use composition or inheritance?:   Inheritance
