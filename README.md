@@ -115,11 +115,32 @@ Constant Product.sol
 
 ## Setup
 
-TODO: steps to build (at least) all in-scope contracts, and commands that will run tests producing gas reports for the relevant contracts, etc
+This repository uses Foundry as a smart contract development toolchain.
+
+See the [Foundry Docs](https://book.getfoundry.sh/) for more info on installation and usage.
+
+```bash
+foundryup
+forge install
+forge build
+```
 
 ## Tests
 
-TODO: steps to run the tests
+Prior to running tests, you should set up your environment. At present this repository contains fork tests against ETH mainnet; your environment will need an `MAINNET_RPC_URL` key to run these tests. This is used in `IntegrationTestGasComparisons.sol`.
+
+Additionally, the `--ffi` cheatcode is used to verify certain actions. Due to the arbitrary code execution nature of `--ffi`, it is advised to review the executed code prior to running.
+The test using `-ffi` are:
+  - `testFuzz_powu()` 
+  - `testSim_capReserve_decrease()`
+  - `testSim_capReserve_increase()` 
+The code being executed are: 
+  - `test/pumps/simulate.py`
+  - `test/differential/powu.py`
+  
+The main command to run tests is:
+
+`forge test -vv --ffi`
 
 ## Scoping Details
 
