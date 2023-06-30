@@ -150,7 +150,7 @@ Prior to running tests, you should set up your environment. At present this repo
 
 Additionally, the `--ffi` cheatcode is used to verify certain actions. Due to the arbitrary code execution nature of `--ffi`, it is advised to review the executed code prior to running. 
 
-To setup the python enviornment: 
+To setup the python environment: 
 `python3 -m venv env`
 `source env/bin/activate`
 `python3 -m pip install -r requirements.txt`
@@ -165,7 +165,11 @@ The code being executed are:
   
 The main command to run tests is:
 
-`forge test -vv --ffi`
+`forge test --ffi`
+
+to omit invariant tests: 
+
+`forge test --ffi --no-match-test invariant`
 
 ## Scoping Details
 
