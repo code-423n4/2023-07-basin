@@ -147,7 +147,14 @@ forge build
 
 Prior to running tests, you should set up your environment. At present this repository contains fork tests against ETH mainnet; your environment will need an `MAINNET_RPC_URL` key to run these tests. This is used in `IntegrationTestGasComparisons.sol`.
 
-Additionally, the `--ffi` cheatcode is used to verify certain actions. Due to the arbitrary code execution nature of `--ffi`, it is advised to review the executed code prior to running.
+
+Additionally, the `--ffi` cheatcode is used to verify certain actions. Due to the arbitrary code execution nature of `--ffi`, it is advised to review the executed code prior to running. 
+
+To setup the python enviornment: 
+`python3 -m venv env`
+`source env/bin/activate`
+`python3 -m pip install -r requirements.txt`
+
 The test using `-ffi` are:
   - `testFuzz_powu()` 
   - `testSim_capReserve_decrease()`

@@ -40,7 +40,7 @@ contract ABDKTest is TestHelper {
         num = bound(num, 1, denom);
 
         string[] memory inputs = new string[](8);
-        inputs[0] = "python";
+        inputs[0] = "python3";
         inputs[1] = "test/differential/powu.py";
         inputs[2] = "--numerator";
         inputs[3] = uint256(num).toString();
