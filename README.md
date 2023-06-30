@@ -1,53 +1,20 @@
-# ✨ So you want to run an audit
+- [Basin Contest Details](#basin-contest-details)
+- [Basin Introduction](#basin-introduction)
+    - [Code Walkthrough](#code-walkthrough)
+    - [Architecture Diagram](#architecture-diagram)
+    - [Documentation](#documentation)
+    - [Motivation](#motivation)
+    - [Past Audits](#past-audits)
+- [C4 Contest](#c4-contest)
+    - [Scope](#scope)
+    - [Setup](#setup)
+    - [Tests](#tests)
+    - [Scoping Details](#scoping-details)
+- [Contact Us](#contact-us)
 
-This `README.md` contains a set of checklists for our audit collaboration.
+<img src="https://github.com/BeanstalkFarms/Beanstalk-Brand-Assets/blob/main/basin/basin(green)-512x512.png" alt="Basin logo" align="right" width="120" />
 
-Your audit will use two repos: 
-- **an _audit_ repo** (this one), which is used for scoping your audit and for providing information to wardens
-- **a _findings_ repo**, where issues are submitted (shared with you after the audit) 
-
-Ultimately, when we launch the audit, this repo will be made public and will contain the smart contracts to be reviewed and all the information needed for audit participants. The findings repo will be made public after the audit report is published and your team has mitigated the identified issues.
-
-Some of the checklists in this doc are for **C4 (🐺)** and some of them are for **you as the audit sponsor (⭐️)**.
-
----
-
-# Repo setup
-
-## ⭐️ Sponsor: Add code to this repo
-
-- [ ] Create a PR to this repo with the below changes:
-- [ ] Provide a self-contained repository with working commands that will build (at least) all in-scope contracts, and commands that will run tests producing gas reports for the relevant contracts.
-- [ ] Make sure your code is thoroughly commented using the [NatSpec format](https://docs.soliditylang.org/en/v0.5.10/natspec-format.html#natspec-format).
-- [ ] Please have final versions of contracts and documentation added/updated in this repo **no less than 24 hours prior to audit start time.**
-- [ ] Be prepared for a 🚨code freeze🚨 for the duration of the audit — important because it establishes a level playing field. We want to ensure everyone's looking at the same code, no matter when they look during the audit. (Note: this includes your own repo, since a PR can leak alpha to our wardens!)
-
-
----
-
-## ⭐️ Sponsor: Edit this README
-
-Under "SPONSORS ADD INFO HERE" heading below, include the following:
-
-- [ ] Modify the bottom of this `README.md` file to describe how your code is supposed to work with links to any relevent documentation and any other criteria/details that the C4 Wardens should keep in mind when reviewing. ([Here's a well-constructed example.](https://github.com/code-423n4/2022-08-foundation#readme))
-  - [ ] When linking, please provide all links as full absolute links versus relative links
-  - [ ] All information should be provided in markdown format (HTML does not render on Code4rena.com)
-- [ ] Under the "Scope" heading, provide the name of each contract and:
-  - [ ] source lines of code (excluding blank lines and comments) in each
-  - [ ] external contracts called in each
-  - [ ] libraries used in each
-- [ ] Describe any novel or unique curve logic or mathematical models implemented in the contracts
-- [ ] Does the token conform to the ERC-20 standard? In what specific ways does it differ?
-- [ ] Describe anything else that adds any special logic that makes your approach unique
-- [ ] Identify any areas of specific concern in reviewing the code
-- [ ] Review the Gas award pool amount. This can be adjusted up or down, based on your preference - just flag it for Code4rena staff so we can update the pool totals across all comms channels. 
-- [ ] Optional / nice to have: pre-record a high-level overview of your protocol (not just specific smart contract functions). This saves wardens a lot of time wading through documentation.
-- [ ] See also: [this checklist in Notion](https://code4rena.notion.site/Key-info-for-Code4rena-sponsors-f60764c4c4574bbf8e7a6dbd72cc49b4#0cafa01e6201462e9f78677a39e09746)
-- [ ] Delete this checklist and all text above the line below when you're ready.
-
----
-
-# Basin audit details
+# Basin Contest Details
 - Total Prize Pool: $40,000 USDC 
   - HM awards: $27,637.50 USDC 
   - Analysis awards: $1,675 USDC 
@@ -63,19 +30,76 @@ Under "SPONSORS ADD INFO HERE" heading below, include the following:
 - Starts July 03, 2023 20:00 UTC 
 - Ends July 10, 2023 20:00 UTC 
 
-## Automated Findings / Publicly Known Issues
+# Introduction to Basin
 
-Automated findings output for the audit can be found [here](add link to report) within 24 hours of audit opening.
+Website: https://basin.exchange
 
-*Note for C4 wardens: Anything included in the automated findings output is considered a publicly known issue and is ineligible for awards.*
+Welcome, C4 Wardens! Basin is the next step in the evolution of EVM-native DEXs.
 
-[ ⭐️ SPONSORS ADD INFO HERE ]
+Exchanging is a core piece of economic activity. However, currect decentralized exchange (DEX) architectures are not composable, such that adding an exchange function or oracle to them is difficult. The nature of open source software is that each problem should only need to be solved once in a given execution environment. Non-composable DEX architectures prevent this. We propose an EVM-native DEX architecture which (1) allows for composing arbitrary exchange functions, oracles and exchange implementations for ERC-20 standard
+tokens and (2) includes a registry to verify exchange implementations.
 
-# Overview
+Well designed open source protocols enable anyone to (1) compose existing components together, (2) develop new components when existing ones fail to meet the needs of users or are cost-inefficient and (3) verify the proper use of existing components in a simple fashion. Basin allows for anyone to compose new and existing (1) *Well Functions* (i.e. exchange functions), (2) *Pumps* (i.e., network native oracles) and (3) *Well Implementations* (i.e., exchange implementations) to create a *Well* (i.e., a customized liquidity pool). *Aquifers* (i.e., Well registries) store a mapping from Well addresses to Well Implementations to enable verification of a Well Implementation given a Well address.
 
-*Please provide some context about the code being audited, and identify any areas of specific concern in reviewing the code. (This is a good place to link to your docs, if you have them.)*
+**The whitepapers for Basin and Multi Flow Pump are by far the best resources for learning about how the DEX architecture is intended the work, the motivations for building them, detailed overviews of the math that is implemented, etc. We highly recommend reading these drafts as you begin your review:**
+* [Basin Whitepaper](https://basin.exchange/basin.pdf)
+* [Multi Flow Pump Whitepaper](https://basin.exchange/multi-flow-pump.pdf)
 
-# Scope
+## Code Walkthrough
+
+Check out the following code walkthrough of Basin, starting at 29:00: https://youtu.be/SEM2AJwTvfg?t=1740
+
+## Architecture Diagram
+
+Architecture diagram of Basin: https://www.figma.com/file/u3IUVxVF8IOfYVIUEYc3sm/Technical-Graphic%3A-Wells-System-Architecture?node-id=0%3A1&t=fjHB8lY8WsrwyhZj-0
+
+## Documentation
+
+A draft of the Basin whitepaper is available [here](https://basin.exchange/basin.pdf). A draft of the Multi Flow Pump whitepaper is available [here](https://basin.exchange/multi-flow-pump.pdf).
+
+A [{Well}](/src/Well.sol) is a constant function AMM that allows the provisioning of liquidity into a single pooled on-chain liquidity position.
+
+Each Well is defined by its Tokens, Well function, and Pump.
+- The **Tokens** define the set of ERC-20 tokens that can be exchanged in the Well.
+- The **Well function** defines an invariant relationship between the Well's reserves and the supply of LP tokens. See [{IWellFunction}](/src//interfaces/IWellFunction.sol).
+- **Pumps** are an on-chain oracles that are updated upon each interaction with the Well. See [{IPump}](/src/interfaces/IPump.sol).
+
+A Well's tokens, Well function, and Pump are stored as immutable variables during Well construction to prevent unnecessary SLOAD calls during operation.
+
+Wells support swapping, adding liquidity, and removing liquidity in balanced or imbalanced proportions.
+
+Wells maintain two components of state:
+- a balance of tokens received through Well operations ("reserves")
+- an ERC-20 LP token representing pro-rata ownership of the reserves
+
+Well functions and Pumps can independently choose to be stateful or stateless.
+
+Including a Pump is optional.
+
+Each Well implements ERC-20, ERC-2612 and the [{IWell}](/src/interfaces/IWell.sol) interface.
+
+## Motivation
+
+Allowing composability of the pricing function and oracle at the Well level is a deliberate design decision with significant implications. 
+
+In particular, a standard AMM interface invoking composable components allows for developers to iterate upon the underlying pricing functions and oracles, which greatly impacts gas and capital efficiency. 
+
+However, this architecture shifts much of the attack surface area to the Well's components. Users of Wells should be aware that anyone can deploy a Well with malicious components, and that new Wells SHOULD NOT be trusted without careful review. This understanding is particularly important in the DeFi context in which Well data may be consumed via on-chain registries or off-chain indexing systems.
+
+The Wells architecture aims to outline a simple interface for composable AMMs and leave the process of evaluating a given Well's trustworthiness as the responsibility of the user. To this end, future work may focus on development of on-chain Well registries and factories which create or highlight Wells composed of known components.
+
+An example factory implementation is provided in [{Aquifer}](/src/Auquifer.sol) without any opinion regarding the trustworthiness of Well functions and the Pumps using it. Wells are not required to be deployed via this mechanism.
+
+## Past Audits
+
+These audits reports may provide insight on known issues and acknowledged findings in Basin:
+
+* [Cyfrin Basin Audit](https://basin.exchange/cyfrin-basin-audit.pdf)
+* [Halborn Basin Audit](https://basin.exchange/halborn-basin-audit.pdf)
+
+# C4 Contest
+
+## Scope
 
 *List all files in scope in the table below (along with hyperlinks) -- and feel free to add notes here to emphasize areas of focus.*
 
@@ -85,19 +109,22 @@ Automated findings output for the audit can be found [here](add link to report) 
 | ----------- | ----------- | ----------- | ----------- |
 | [contracts/folder/sample.sol](contracts/folder/sample.sol) | 123 | This contract does XYZ | [`@openzeppelin/*`](https://openzeppelin.com/contracts/) |
 
-## Out of scope
+**Out of Scope**
 
-*List any files/contracts that are out of scope for this audit.*
+Constant Product.sol
 
-# Additional Context
+## Setup
 
-*Describe any novel or unique curve logic or mathematical models implemented in the contracts*
+TODO: steps to build (at least) all in-scope contracts, and commands that will run tests producing gas reports for the relevant contracts, etc
 
-*Sponsor, please confirm/edit the information below.*
+## Tests
 
-## Scoping Details 
+TODO: steps to run the tests
+
+## Scoping Details
+
 ```
-- If you have a public code repo, please share it here:  https://github.com/BeanstalkFarms/Wells
+- If you have a public code repo, please share it here:  https://github.com/BeanstalkFarms/Basin (made private during the C4 contest)
 - How many contracts are in scope?:   10
 - Total SLoC for these contracts?:  971
 - How many external imports are there?: 5 
@@ -107,20 +134,28 @@ Automated findings output for the audit can be found [here](add link to report) 
 - What is the overall line coverage percentage provided by your tests?:  95
 - Is there a need to understand a separate part of the codebase / get context in order to audit this part of the protocol?:   False
 - Please describe required context:   n/a
-- Does it use an oracle?:  True; on-chain oracles-  GeoEmaAndCumSmaPump.sol is an implementation of Pumps, the oracle framework of Basin — Basin does not "use" an oracle per se
+- Does it use an oracle?:  True; on-chain oracles-  MultiFlowPump.sol is an implementation of Pumps, the oracle framework of Basin — Basin itself does not "use" an oracle per se
 - Does the token conform to the ERC20 standard?: Wells issue LP tokens that conform to the ERC-20 standard 
 - Are there any novel or unique curve logic or mathematical models?: All formulas are documented in detail in the various whitepapers linked to from the contest
 - Does it use a timelock function?:  No
 - Is it an NFT?: No
-- Does it have an AMM?:   True
+- Does it have an AMM?:   True (Basin is an AMM!)
 - Is it a fork of a popular project?:   False
 - Does it use rollups?:   False
 - Is it multi-chain?:  False
 - Does it use a side-chain?: False 
 ```
 
-# Tests
+# Contact Us
 
-*Provide every step required to build the project from a fresh git clone, as well as steps to run the tests with a gas report.* 
+If you have questions, please contact us! Please use the Warden channel in the C4 Discord if it isn't sensitive. Otherwise:
 
-*Note: Many wardens run Slither as a first pass for testing.  Please document any known errors with no workaround.* 
+**Publius (Dev)**
+* Discord: @publiuss
+
+**Brean (Dev)**
+* Discord: @brean
+
+If you are having trouble getting in touch with Publius and/or Brean, please message **Guy**:
+* Discord: @hellofromguy
+* Telegram: @hellofromguy
