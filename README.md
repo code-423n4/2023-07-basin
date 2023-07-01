@@ -73,7 +73,7 @@ A [{Well}](https://github.com/code-423n4/2023-07-basin/blob/main/src/Well.sol) i
 Each Well is defined by its Tokens, Well function, and Pump.
 - The **Tokens** define the set of ERC-20 tokens that can be exchanged in the Well.
 - The **Well function** defines an invariant relationship between the Well's reserves and the supply of LP tokens. See [{IWellFunction}](https://github.com/code-423n4/2023-07-basin/blob/main/src/interfaces/IWellFunction.sol).
-- **Pumps** are an on-chain oracles that are updated upon each interaction with the Well. See [{IPump}](https://github.com/code-423n4/2023-07-basin/blob/main/src/interfaces/IPump.sol).
+- **Pumps** are an on-chain oracles that are updated upon each interaction with the Well. See [{IPump}](https://github.com/code-423n4/2023-07-basin/blob/main/src/interfaces/pumps/IPump.sol).
 
 A Well's tokens, Well function, and Pump are stored as immutable variables during Well construction to prevent unnecessary SLOAD calls during operation.
 
