@@ -1,15 +1,12 @@
 {
   "detectors_to_exclude": "assembly,solc-version,naming-convention,incorrect-equality,uninitialized-local,timestamp,low-level-calls,unimplemented-functions,too-many-digits,similar-names,calls-loop,arbitrary-send-eth,reentrancy-no-eth,reentrancy-benign,reentrancy-events,unused-state",
-  "filter_paths": "lib/|mocks/|script/",
-  "solc_remaps": ["prb/math/=lib/prb-math/src/",
-  "ds-test=lib/ds-test/src",
-  "forge-std/=lib/forge-std/src/",
-  "oz/=lib/openzeppelin-contracts/contracts/",
-  "src/=src/",
-  "mocks=mocks/",
-  "tests=tests/",
-  "utils=utils/",
-  "ozu/=lib/openzeppelin-contracts-upgradeable/contracts/"
-]
+  "filter_paths": "lib/|test/|mocks/|script/",
+  "solc_remaps": [
+    "prb/math/=lib/prb-math/src/",
+    "forge-std/=lib/forge-std/src/",
+    "oz/=lib/openzeppelin-contracts/contracts/",
+    "ozu/=lib/openzeppelin-contracts-upgradeable/contracts/",
+    "ds-test=lib/ds-test/src/"
+  ],
+  "exclude_informational": "True"
 }
-  
