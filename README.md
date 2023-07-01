@@ -173,6 +173,10 @@ to omit invariant tests:
 
 `forge test --ffi --no-match-test invariant`
 
+to run slither:
+`python3 -m pip install slither-analyzer`
+`slither .`
+
 ## Scoping Details
 
 ```
