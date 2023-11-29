@@ -1,0 +1,1175 @@
+==============================================================
+Guild: Code4rena
+Channel: ARCHIVE-Q3-2023 / basin-jul03
+==============================================================
+
+[06/30/2023 15:56] kartoonjoy (pinned)
+👋 Hello and welcome to the audit channel for the $40,000 **Basin** audit!
+
+📆 Audit opens 07/03/2023 20:00 (20:00 UTC) and runs through 07/10/2023 20:00 (20:00 UTC)  (7 days).
+
+Please give a warm welcome to the Beanstalk team, particularly @Brean and @publius, who will be available for questions either here in the channel or via DM in the GMT+7 timezone(s).
+
+We'll be posting relevant links, documentation, etc. here, so if you intend to participate in this audit, consider enabling notifications for this channel. 🐺 ⏰
+
+Audit Page: https://code4rena.com/contests/2023-07-basin
+
+{Embed}
+https://code4rena.com/contests/2023-07-basin
+Code4rena
+Code4rena is a competitive audit platform that finds more high-severity vulnerabilities, more quickly than any other auditing method.
+Code4rena - ARCHIVE-Q3-2023 - basin-jul03 [1124366470349066290].txt_Files/c4-og-banner-3E5BC.png
+
+{Reactions}
+BeanLove (8) beancomfy (3) farmerbean (3) 
+
+[06/30/2023 16:02] kartoonjoy
+Pinned a message.
+
+
+[07/03/2023 17:10] hellofromguy (pinned)
+hey wardens! very excited for this contest to kickoff in a few hours. given how important DEXs are to beanstalk, we've spent a lot of time working with existing DEX implementations and thinking about where they lack, particular wrt composability. 
+
+we believe basin takes significant strides in the right direction for DEX design (think plug and play pricing functions, customizable fees, multi block MEV resistant oracles, etc.). the repo's README will link to two important documents that provide helpful context on basin (the DEX architecture itself) and multi flow (the multi block MEV resistant oracle implementation). I'm sharing these public links below in case you want to take a look in advance. please let us know how else we can help as you audit and thank you for you help in securing basin! :BeanSalute: 
+
+basin: https://basin.exchange/basin.pdf
+multi flow: https://basin.exchange/multi-flow-pump.pdf
+
+{Reactions}
+👋 (12) 🫡 (3) 🚀 (2) 10_10 
+
+[07/03/2023 18:28] kartoonjoy
+Pinned a message.
+
+
+[07/03/2023 21:53] 0xkazimm
+special respect to the team because they gave us the best resources and details at the best form for this contest, great work basin team 👏
+
+{Reactions}
+🎉 (6) ➕ 👏🏿 
+
+[07/04/2023 02:02] brean
+gm :sprout:
+
+{Reactions}
+🌸 
+
+[07/04/2023 04:36] mosharaf
+Gm guys
+
+
+[07/04/2023 07:12] 0xsorrynotsorry
+*“So we sailed on through the narrow straits, crying aloud for fear of Scylla on the one hand while
+divine Charybdis sucked the sea in terribly on the other.”*
+
+what a nice intro for a whitepaper ❤️
+
+{Reactions}
+BeanLove (2) 
+
+[07/04/2023 09:03] 0xtotem
+First thanks to the team to provide those diagram and well documented code!
+
+Basic question: In their whitepaper they state the following in the abstract:
+> However, currect decentralized exchange (DEX) architectures are not composable, such that adding an exchange function or oracle to them is difficult. 
+
+What is the "function" they talk about? The x*y=k?
+Why is that difficult to change? Same question for oracles.
+
+{Reactions}
+❤️ 
+
+[07/04/2023 09:22] brean
+An AMM can be generalized into 3 (but not limited to) components: 
+1: The exchange function, or how the assets in an AMM trade against each other given an state in the AMM. Examples include the constant Product (x*y = k), curve's stableswap, or solidly's stableswap Invariant. 
+
+2: The oracle system, or data that is stored/read by network-native protocols.
+
+3: The exchange implementation. I.e how the AMM is interacted with (swapping and adding/removing liquidity).
+
+The current DEX architectures mandate that a user providing liquidity use their exchange function, oracle, and implementation. For a user to create their own custom set of the 3, they would need to create and deploy their own AMM framework. For example, its not possible to use the Uniswap v3 TWAP oracle with Curve's stableswap exchange function without creating an entirely separate protocol.  The idea is that all parts of the AMM stack should be composable and reuseable as necessary, such that code is never re-written. 
+
+Let me know if you have any questions.
+
+{Reactions}
+BeanSalute (5) 🔥 (4) 
+
+[07/04/2023 09:26] 0xtotem
+Thanks that's very clear, I didn't know there were a need for this kind of low-level composability.
+
+{Reactions}
+❤️ (2) 
+
+[07/04/2023 10:48] zaevlad
+@Brean hey, just wnat to be sure: it says :"*...and that new Wells SHOULD NOT be trusted without careful review*" So any issues with Well manipulations are out of scope?
+
+{Reactions}
+❤️ 
+
+[07/04/2023 13:13] brean
+Its important to distinguish the concept of an "Well", the combination of an exchange function, oracle, and exchange implementation, and the repo's instance of an well. The intent behind that sentence is that anyone can deploy a malicious well (similarly to how anyone can deploy an malicious ERC20, even with the standard defined), and care should be taken when interacting with one. The aquifer and aqueducts are two examples of how one protocol can prevent deploying bad wells. 
+
+TL:DR: `Well.sol` and the ability to attack/manipulate that specific contract is in scope, but the potential that Wells can be fabricated to be *manipulable* is an non issue and unavoidable without sacrificing composability.
+
+{Reactions}
+👍 (4) 
+
+[07/04/2023 13:33] 0xkazimm
+did this protocol planning to deploy on L2 chains ?
+
+
+[07/04/2023 13:34] hellofromguy
+not currently, but anyone could do so
+
+{Reactions}
+👍🏻 
+
+[07/04/2023 13:48] trust90
+@Brean Hi, can you send friend RQ?
+
+{Reactions}
+👍 
+
+[07/04/2023 13:54] cloudellie (pinned)
+**Wardens** - please note that the automated findings output (AKA the winning bot race report 🏆, submitted by @0x6980 is posted below.
+
+These are considered publicly known issues and are not eligible for awards.
+
+🤖 **Automated findings:** 
+https://gist.github.com/CloudEllie/53be96a57d19e7442313cad2a12ec11a
+
+📄 **Code4rena submission guidelines and automated findings policy:** 
+https://docs.code4rena.com/roles/wardens/submission-policy#automated-findings-ineligible
+
+The above link will also be added to the contest README shortly.
+
+{Embed}
+https://gist.github.com/CloudEllie/53be96a57d19e7442313cad2a12ec11a
+Basin Code4rena audit: winning bot race report by 0x6980 bot
+Basin Code4rena audit: winning bot race report by 0x6980 bot - basin-code4rena-0x6980-bot-report.md
+Code4rena - ARCHIVE-Q3-2023 - basin-jul03 [1124366470349066290].txt_Files/gist-og-image-17482.png
+
+{Embed}
+https://docs.code4rena.com/roles/wardens/submission-policy
+Submission policy
+
+{Reactions}
+👏🏿 
+
+[07/04/2023 13:56] cloudellie
+Pinned a message.
+
+
+[07/04/2023 14:39] 0xkazimm
+which one of team member are available in this time(now)
+
+
+[07/04/2023 14:43] publiuss
+@Brean and I
+
+{Reactions}
+❤️ 
+
+[07/04/2023 19:41] cergyk
+@publius What's incentivizing providing liquidity to a well if there are no trading fees?
+
+
+[07/05/2023 03:07] jes5_c
+Should we submit an Analysis along with findings?
+
+
+[07/05/2023 03:25] hellofromguy
+external protocol incentives—for example the Stalk System in Beanstalk: https://docs.bean.money/almanac/farm/silo#the-stalk-system. The Beanstalk DAO can whitelist a BEAN:X Well in the Silo and LPers in the Well can earn Stalk and Seeds.
+
+If you look at the growth of Bean liquidity before the April 2022 exploit (https://app.bean.money/#/analytics?bean=liquidity -> ALL), it's reasonable to posit that this was not due to the 0.04% trading fee on Curve, but rather due to Stalk and Seed rewards, as Stalkholders were earning new Bean mints. Thus, in Beanstalk's case, trading fees on AMMs are simply an unnecessary cost to the system as they don't allow profitable arbitrage around the peg (in the case of a 0.04% trading fee, arbitrage of the Bean price above 0.9996 and below 1.0004 is unprofitable).
+
+Just to be clear, **a Well function can have a trading fee**. But `ConstantProduct2.sol`, the Well function that we have implemented and that is in scope, does not.
+
+{Reactions}
+👍 (3) 
+
+[07/05/2023 04:50] hellofromguy
+we would appreciate it!
+
+{Reactions}
+👍 
+
+[07/05/2023 06:40] pfapostol
+Why `functions/ConstantProduct.sol` `functions/ProportionalLPToken.sol` are out of scope? Are these third party contracts or just not going to be used?
+
+
+[07/05/2023 06:52] hellofromguy
+the latter, they aren't going to be used in the near term
+
+{Reactions}
+👍 
+
+[07/05/2023 12:12] 0xkazimm
+did any user can create a well ?
+
+
+[07/05/2023 12:15] hellofromguy
+deploying a Well is permissionless, yes
+
+{Reactions}
+❤️ 
+
+[07/05/2023 12:41] dishwasher84
+Why is this constraint enforced: ```calcLpTokenSupply(...) >= totalSupply()```?
+
+
+[07/05/2023 12:44] 0xkazimm
+in which contract ?!
+
+
+[07/05/2023 13:02] publiuss
+Ideally, the constraint `calcLpTokenSupply(...) = totalSupply()` would be enforced, but in reality, it is impossible to strictly enforced this constraint due to rounding. When minting/burning LP tokens, this Well implementation always rounds in the direction minting less LP Tokens and burning more LP tokens. Thus, because of this rounding, the constraint in actuality is `calcLpTokenSupply(...) >= totalSupply()`.
+
+
+[07/05/2023 15:41] lsaudit
+@publius hey, I've DM you
+
+{Reactions}
+👍 
+
+[07/05/2023 18:13] plamkata
+Based answer
+
+
+[07/05/2023 19:44] CoOLLaItAr#5816
+check dm @publius
+
+{Reactions}
+👍 
+
+[07/05/2023 21:43] 0xprinc
+lastReserve and lastTimestamp is the amount and time for latest interaction with well 
+? Am i right ?
+
+
+[07/05/2023 23:09] publiuss
+lastTimestamp is the time for the last interaction with the Well (assuming the last Pump update didn’t fail).
+
+lastReserves are the multi-block MEV manipulation resistant last reserves in the Well. You can read more in section 3.1 in the Multi Flow Pump whitepaper:
+https://basin.exchange/multi-flow-pump.pdf
+
+{Reactions}
+👍 
+
+[07/06/2023 02:49] 0xdeo
+Are there any similar protocols to basin? Or is the composable dex idea entirely novel
+
+
+[07/06/2023 04:26] albertwh1te
+I think it is the combine of curve and solidly
+
+
+[07/06/2023 05:59] brean
+there has not been an implementation on the EVM as far as we know.
+
+
+[07/06/2023 05:59] CoOLLaItAr#5816
+check dm @publius
+
+
+[07/06/2023 11:52] 0xkazimm
+For anyone who asked if the protocol supports eth, the protocol planning to use wEth.
+
+
+Just want to help the wardens and the team by sharing repeated Questions 🫡
+
+{Reactions}
+🔆 
+
+[07/06/2023 13:00] zaevlad
+@publius is it planned to be used on different chains later?
+
+
+[07/06/2023 13:01] publiuss
+No plans as of now. Just Ethereum mainnet.
+
+{Reactions}
+👍 
+
+[07/06/2023 13:54] zaevlad
+@publius dm you, thanks
+
+
+[07/06/2023 13:56] 0xkazimm
+where can i found `readLastReserves` function ?!
+
+
+[07/06/2023 13:58] albertwh1te
+src/pumps/MultiFlowPump.sol:171:    function readLastReserves(address well) public view returns (uint256[] memory reserves) {
+
+{Reactions}
+❤️ 
+
+[07/06/2023 13:58] albertwh1te
+I hope it  helps
+
+
+[07/06/2023 13:58] 0xkazimm
+thank you ser
+
+{Reactions}
+💪 
+
+[07/06/2023 13:58] albertwh1te
+src/libraries/LibLastReserveBytes.sol:68:    function readLastReserves(bytes32 slot)
+
+{Reactions}
+👍🏻 
+
+[07/06/2023 13:58] albertwh1te
+also here
+
+
+[07/06/2023 13:59] albertwh1te
+💪
+
+
+[07/06/2023 14:13] 0xkazimm
+did anyone runs the forge build ? it reverts when i run it ?
+
+
+[07/06/2023 15:26] alexzoid
+[⠘] Compiling...
+[⠆] Compiling 66 files with 0.8.17
+[⠃] Solc 0.8.17 finished in 30.48s
+Compiler run successful!
+
+
+[07/06/2023 15:41] albertwh1te
+same here but little faster
+
+
+[07/06/2023 15:47] plamkata
+@Brean @publius I am a newbie still, so I wanna ask lay out what I have understanded of the protocl before I dig further.
+The ``Aquifer`` is used to deploy new ``Wells``, that can be malicious so users should take this into account, by either using create or create2. ``Pumps`` basically are the contracts that connect to oracles, users can make them aswell and multiple Wells can use a single Pump. ``WellImplementation`` take care of LP actions for Wells, like a logic contract for the ``Well``
+
+
+[07/06/2023 16:51] brean
+Aquifers are an instance of a well factory deployer and registry. In this implementation, there is a mapping of an well Address to its well implementation address. This allows a user to authenticate that a well address uses a trusted well implementation prior to using that well. The Well implementation must be verified prior to verifying the well function, well pump, and reserves, given that all can be spoofed given a malicious well implementation.
+
+
+[07/06/2023 16:51] plamkata
+Are rebasing tokens supported
+
+
+[07/06/2023 16:52] plamkata
+I saw fee-on-transfer are supported
+
+
+[07/06/2023 17:13] publiuss
+rebasing tokens are handled the same way as Uniswap V2. You can read about it here:
+https://docs.uniswap.org/contracts/v2/reference/smart-contracts/common-errors#positive-rebasing-tokens
+
+
+[07/06/2023 17:28] 0xkazimm
+Idk it won’t work for me
+
+
+[07/06/2023 17:45] 0xprinc
+Hey @publius check dm
+
+{Reactions}
+👍 
+
+[07/06/2023 18:00] noahfig.eth
+Hey, there! Maybe this question is a bit naive, but is a well designed to hold multiple tokens or just pairs?
+
+
+[07/06/2023 18:01] plamkata
+mutliple
+
+
+[07/06/2023 18:04] noahfig.eth
+thanks @ptsanev
+
+
+[07/06/2023 18:05] plamkata
+@publius @Brean What is the meaning behind ``uint256 constant EXP_PRECISION = 1e12;`` is it supposed to be hardcoded
+
+
+[07/06/2023 18:41] 0xkazimm
+did the protocol charge fee for swap ? not the fee on transfer, but fee for calling `swap` like uniswap does.
+
+
+[07/06/2023 18:46] plamkata
+yeah, do LPs earn anything?
+
+
+[07/06/2023 19:05] plamkata
+@Brean can I dm
+
+
+[07/06/2023 19:22] noahfig.eth
+@publius @Brean Once someone deploys a well, using a verified Aquifer makes that well verified? Or is there another process once that well is deployed ?
+
+
+[07/06/2023 20:07] 0xkazimm
+did this protocol following the `x*y = k` formula like other swap protocols does ?
+
+
+[07/07/2023 03:18] publiuss
+A Well is verified if it’s Aquifer, implementation, Well Function, Pumps have been manually verified.
+
+{Reactions}
+👍 
+
+[07/07/2023 03:21] publiuss
+https://discord.com/channels/810916927919620096/1124366470349066290/1125990724748455986
+
+{Reactions}
+👍 
+
+[07/07/2023 05:57] brean
+```/**
+ * @title ConstantProduct2
+ * @author Publius
+ * @notice Gas efficient Constant Product pricing function for Wells with 2 tokens.
+ * @dev Constant Product Wells with 2 tokens use the formula:
+ *  `b_0 * b_1 = s^2`
+ *
+ * Where:
+ *  `s` is the supply of LP tokens
+ *  `b_i` is the reserve at index `i`
+ */
+```
+
+
+[07/07/2023 07:06] plamkata
+So the LP**2 = r0 * r1 is an invariant?
+
+{Reactions}
+👍 
+
+[07/07/2023 08:21] lourenslinde
+@publius sent you a friend request :gummy_wink:
+
+{Reactions}
+👍 
+
+[07/07/2023 09:25] plamkata
+@publius how would the above invariant look like in a multitoken pool, I am not home atm so I cant look at the codebase but this question bugs me
+
+
+[07/07/2023 10:29] 0xprinc
+@Brean can you send friend request, i have something to ask 😅
+
+
+[07/07/2023 10:56] albertwh1te
+yes it is
+
+
+[07/07/2023 11:03] publiuss
+The multi-token implementation of constant product is out of scope in this audit, but you can view the current implementation with the price invariant here if you are curious:
+https://github.com/BeanstalkFarms/Basin/blob/master/src/functions/ConstantProduct.sol#L14
+
+
+[07/07/2023 16:30] plamkata
+@publius @Brean what is the use of the ``EXP_PRECISION``
+
+
+[07/07/2023 16:40] publiuss
+To add precision in the `sqrt` operation.
+
+
+[07/07/2023 17:00] plamkata
+Anyone up to help out with setting up forge, I wrote a few notes for some tests to run, but I get to this point when trying to set it up. I did foundryup, forge install to install the missing dependencies and when I build there is no problem, but for some reason when I try to run the tests I get this
+
+{Attachments}
+Code4rena - ARCHIVE-Q3-2023 - basin-jul03 [1124366470349066290].txt_Files/image-CB3D7.png
+
+
+[07/07/2023 17:01] plamkata
+I have opened the file that the error comes from but theres nothing
+
+
+[07/07/2023 17:06] plamkata
+Also my remappings seem to not be working
+
+
+[07/07/2023 18:41] jgcarv
+Is there any testnet deployment available for us to take a look?
+
+
+[07/07/2023 18:45] 0xkazimm
+did `lpTokenSupply` in `_calcReserve` refers to the total supply for a token ?!
+
+
+[07/07/2023 18:46] plamkata
+no thats the supply of liquidty Well tokens
+
+
+[07/07/2023 18:46] plamkata
+for the current Well
+
+
+[07/07/2023 18:49] plamkata
+@publius @Brean When one of you is on can you hit me up to help me fix the tests pls
+
+
+[07/07/2023 23:46] 33audits
+@publius sent a friend request
+
+
+[07/08/2023 02:41] dishwasher84
+same question
+
+
+[07/08/2023 03:39] tamayonft
+How can I change the risk rating if I already submit the issue?
+
+
+[07/08/2023 06:24] lourenslinde
+This is a constant used to help maintain precision during calculations. It's equivalent to `1 000 000 000 000 000 000` if I'm not mistaken.
+
+
+[07/08/2023 07:13] plamkata
+@publius @Brean A person can choose to add liquidity only to 1 token by providing 0 for the other right
+
+{Reactions}
+👍 
+
+[07/08/2023 07:40] lourenslinde
+Check the `Well.AddLiquidity.t.sol` file. 
+
+Some alpha: They have a lot of good, well-organized tests which have answered many of my questions about input assumptions :gummy_wink:
+
+
+[07/08/2023 07:41] plamkata
+I have a problem running the test, check out my screenshot and problem above
+
+
+[07/08/2023 08:06] lourenslinde
+Hmm, check your path to `src/Aquifer.sol` in the `Aquifer.s.sol` file. That's probably the issue there looking at the errors. Not sure why yours would be giving that error though. What does your `remappings.txt` file say?
+
+
+[07/08/2023 08:08] plamkata
+
+
+{Attachments}
+Code4rena - ARCHIVE-Q3-2023 - basin-jul03 [1124366470349066290].txt_Files/image-41C31.png
+
+
+[07/08/2023 08:08] plamkata
+Here it is
+
+
+[07/08/2023 08:08] plamkata
+It came this way
+
+
+[07/08/2023 08:08] plamkata
+forge build works just fine
+
+
+[07/08/2023 08:13] lourenslinde
+Weird... what happens if you change `src/=lib/prb-math/src/` to `src/=src/`
+
+
+[07/08/2023 10:18] plamkata
+The error changed
+
+
+[07/08/2023 10:18] plamkata
+
+
+{Attachments}
+Code4rena - ARCHIVE-Q3-2023 - basin-jul03 [1124366470349066290].txt_Files/image-D65D3.png
+
+
+[07/08/2023 10:29] lourenslinde
+Great, there's progress! You can see that the `openzeppelin-contracts-upgradeable` mapping is incorrect, there's  a `contracts` dir missing in the file path. Try setting your mappings as below:
+```
+prb/math/=lib/prb-math/src/
+forge-std/=lib/forge-std/src/
+oz/=lib/openzeppelin-contracts/contracts/
+ozu/=lib/openzeppelin-contracts-upgradeable/contracts/
+src/=src/
+mocks=mocks/
+tests=tests/
+utils=utils/
+```
+
+{Reactions}
+🎩 
+
+[07/08/2023 10:30] plamkata
+Ok it compiled
+
+
+[07/08/2023 10:30] plamkata
+Thanks alot
+
+{Reactions}
+💜 
+
+[07/08/2023 10:30] plamkata
+I wonder why these correct remappings werent included
+
+
+[07/08/2023 10:36] lourenslinde
+No clue, think that bug is out of scope 😂
+
+{Reactions}
+🔥 (2) 
+
+[07/08/2023 11:35] plamkata
+Found a new error xdd
+
+
+[07/08/2023 11:36] plamkata
+
+
+{Attachments}
+Code4rena - ARCHIVE-Q3-2023 - basin-jul03 [1124366470349066290].txt_Files/image-BD22E.png
+
+
+[07/08/2023 11:36] plamkata
+
+
+{Attachments}
+Code4rena - ARCHIVE-Q3-2023 - basin-jul03 [1124366470349066290].txt_Files/image-69FE9.png
+
+
+[07/08/2023 11:36] plamkata
+Thats like everything lol
+
+
+[07/08/2023 11:48] lourenslinde
+Started a thread.
+
+{Reactions}
+🔆 
+
+[07/09/2023 07:59] kosedogus
+@publius check dm please
+
+{Reactions}
+👍 
+
+[07/09/2023 11:09] plamkata
+Isn't the skim function useless?
+
+
+[07/09/2023 11:13] plamkata
+also
+
+
+[07/09/2023 11:13] plamkata
+``uint256 j = _getJ(_tokens, tokenOut);
+        amountOut = reserves[j] - _calcReserve(wellFunction(), reserves, j, totalSupply());`` wouldnt this always be zero
+
+
+[07/09/2023 11:20] vagner_andrei
+no, because reserves is a memory variable which gets updated with the balanceOf(address.this) the specific ERC20, so in the case where there are more erc20 in the contract than the reserves this would be more than 0 and the difference will get transfered
+
+
+[07/09/2023 11:23] plamkata
+If you use the ConstantProduct2 in a 2 token well, since this function doesn't change reserves[i], then _calcReserve() would just return reserves[j], so the subtraction would amount to 0
+
+
+[07/09/2023 11:26] plamkata
+Or am I wrong
+
+
+[07/09/2023 11:33] vagner_andrei
+Hmm I don't think it will be the same since the calcReserve function uses the totalsupply and the other reserve, so if you check for reserve[j] you basically recalculates reserve[j] with the totalSupple and reserve[i]
+
+
+[07/09/2023 11:34] vagner_andrei
+if you look on what reserve is used in the roundUpDiv is the oposite of the one provided
+
+
+[07/09/2023 11:34] vagner_andrei
+if you provide 1 it will be 0
+
+
+[07/09/2023 11:35] vagner_andrei
+so you will basically recalculate the reserve[j] in this case, which will get you a value > 0 if the there are more tokens in the contract than in reserves
+
+
+[07/09/2023 11:36] vagner_andrei
+But i need to do more testing with it tho, I'm telling you just from a first glance what it seems
+
+
+[07/09/2023 11:39] plamkata
+I have done some on paper math with these functions, that's how I found one issue. But I am asking this since in a 2 token well, the LP token total supply ** 2 = reserves[i] * reserves[j] is an invariant. So the ``roundUpDiv`` returns LP token supply / reserves[i], which would be the same as reserves[j]
+
+
+[07/09/2023 11:40] plamkata
+If you find that I am wrong feel free to message, I don't have time to write a test right now, so I would appreciate to know if I have correct logic
+
+
+[07/09/2023 11:43] vagner_andrei
+The logic should be correct, I need to do more testing with it to be sure tho, I will tell you if I find something important about it
+
+
+[07/09/2023 11:55] kosedogus
+No, because reserves[i] has updated upward before this calculation, hence _calcReserve will return less reserve than reserves[j] and amountOut will be positive
+
+
+[07/09/2023 12:15] plamkata
+The shift function doesnt change reserve i
+
+
+[07/09/2023 12:15] plamkata
+The swaps do
+
+
+[07/09/2023 12:15] plamkata
+I am almost sure
+
+
+[07/09/2023 12:17] kosedogus
+shift function is supposedly used after token transfer to Well as mentioned here:
+
+{Attachments}
+Code4rena - ARCHIVE-Q3-2023 - basin-jul03 [1124366470349066290].txt_Files/image-C6530.png
+
+
+[07/09/2023 12:18] kosedogus
+and after token transfer reserves are updated with balance of tokens:
+
+{Attachments}
+Code4rena - ARCHIVE-Q3-2023 - basin-jul03 [1124366470349066290].txt_Files/image-76297.png
+
+
+[07/09/2023 12:18] kosedogus
+so reserves are again changing (according to assumptions made)
+
+
+[07/09/2023 12:20] kosedogus
+at least thats what I understood, If thats wrong I would love to be corrected
+
+
+[07/09/2023 13:13] squeaky_cactus
+@publius @Brean is the Well going to be deployed behind a proxy in production?  
+(Well.sol uses OZ Upgradable contract, but the deploy scripts in the repo don't seem to be using a proxy ...but I'm guessing they're test scripts)
+
+
+[07/09/2023 13:13] plamkata
+@Brean @publius
+
+
+[07/09/2023 13:14] plamkata
+@Kose Until they show up idk too
+
+
+[07/09/2023 16:04] 0xrizwan
+@publius Please check DM.
+
+{Reactions}
+👍 
+
+[07/09/2023 16:52] plamkata
+https://tenor.com/view/dancing-lit-khaled-wiggle-gif-9011147
+
+{Embed}
+https://tenor.com/view/dancing-lit-khaled-wiggle-gif-9011147
+Code4rena - ARCHIVE-Q3-2023 - basin-jul03 [1124366470349066290].txt_Files/dancing-lit-C18E8.png
+
+
+[07/09/2023 19:18] kosedogus
+I wonder will it happen before the contest end 🙂 I've messaged nearly 20 hours ago, no return yet 🙂
+
+
+[07/09/2023 20:24] plamkata
+I reported my speculations as informational justin case
+
+
+[07/09/2023 20:26] plamkata
+But ye lets hope tomorrow
+
+
+[07/10/2023 13:23] publiuss
+No, but it could be if someone wanted to deploy a Well as upgradeable.
+
+
+[07/10/2023 13:27] bean.eth2
+this design of composibility is surprisingly similar to hook in UniV4; maybe just my strange feeling but the motivation is kind of similar
+
+{Reactions}
+✅ 
+
+[07/10/2023 19:43] dwward3n
+is the possibility of maliciously updating wellfunction after aquifer register (audit/review) outofscope?
+
+
+[07/10/2023 19:44] dwward3n
+@Kose
+
+
+[07/10/2023 19:45] dwward3n
+@0xWaitress  @MohammedRizwan do you happen to know answer to my q?
+
+
+[07/10/2023 20:02] C4
+**🚨 AUDIT ALERT**
+
+@🐺wardens The **Basin** audit is now closed! Huge thanks to everyone who participated 🔍, whether you submitted a finding or not.
+
+What's next: The sponsor team and judge will review the findings over the next couple of weeks. Keep an eye on #📢announcements for regular updates on how the audit is progressing through awarding 🤑🏆, judging 🧑‍⚖️ and reporting 📜. Feel free to ping a Contest-Admin if you have questions along the way!
+
+{Reactions}
+🚀 (16) 🙏 (4) 🔥 (4) 👽 (3) code4rena (5) 🫡 (2) 
+
+[07/10/2023 20:40] lourenslinde
+@publius @Brean thanks for the opportunity to audit the project. Loved the dynamic immutable storage layout of the Wells 🚀
+
+Wishing the protocol all the best!
+
+{Reactions}
+❤️ (6) 
+
+[07/12/2023 14:13] c145h
+For the boreWell salt frontrunning issue, did any sponsors acknowledge that issue? Is it valid or not?
+excuse me, I am getting backstage soon 🙂
+
+
+[07/12/2023 17:47] kartoonjoy
+So I think you'll want to get backstage and then be able to have this conversation there.
+
+{Reactions}
+😀 
+
+[07/12/2023 18:44] c145h
+Oh, it seems so quiet here
+
+
+[07/12/2023 19:05] c145h
+@LokiThe5th what OS version did you use for audit, can you tell me?
+
+
+[07/13/2023 06:00] lourenslinde
+Sure, I use both Linux (desktop) and Windows (when I'm traveling)
+
+{Reactions}
+💪 
+
+[08/03/2023 08:21] alcueca
+@publius, @Brean. I'm starting to judge the report. I will leave messages for you via github in the cases that some input is needed. Please keep an eye for them.
+
+{Reactions}
+👍 (3) 
+
+[08/05/2023 19:07] 0xprinc
+When will the results be posted ? 😀
+
+
+[08/07/2023 14:19] thebrittfactor
+We are still in the judging phase, but should be wrapping up soon! Stay tuned!
+
+
+[08/10/2023 15:43] lsaudit
+hey, any chance the result will appear this week?
+
+
+[08/10/2023 16:01] thebrittfactor
+Awards will more than likely be announced next week. Post Judging QA will be ending tomorrow 🙂
+
+
+[08/10/2023 16:02] lsaudit
+Awesome, thank you!
+
+
+[08/16/2023 15:06] 0x11singh99
+Any result update ? @thebrittfactor | C4
+
+
+[08/17/2023 16:56] 0xprinc
+Any updates @thebrittfactor | C4
+
+
+[08/17/2023 16:56] 0xprinc
+?
+
+
+[08/17/2023 17:00] thebrittfactor
+The judge is still working through some submissions in the QA period. Results will be delayed until sometime next week more than likely. Thank you for your patience 🙂
+
+{Reactions}
+🙏 (5) ❤️ (5) 🥺 (2) 🤷‍♂️ (2) 
+
+[08/23/2023 09:27] paspe
+Results wen? In Post-judgin I have read that are almost ready 🙂
+
+
+[08/23/2023 17:37] 0x11singh99
+it was small but still taking too long,😅
+
+{Reactions}
+👀 (5) 
+
+[08/25/2023 15:13] thebrittfactor
+Awards for Basin are being revisited. We will update soon!
+
+{Reactions}
+🦥 
+
+[08/25/2023 15:45] lourenslinde
+👀
+
+
+[08/25/2023 16:27] lsaudit
+does `soon` mean today?
+
+
+[08/25/2023 16:48] hunter_w3b
+🦥
+
+
+[08/25/2023 17:33] Eeyore#8005
+2 weeks min 😆
+
+{Reactions}
+😩 (3) 4739_Skeletor 
+
+[08/25/2023 17:44] lsaudit
+anyway, some update at least please - will some H/M/Q/Gas be removed, or should we expect higher awards? What's happening?
+
+
+[08/26/2023 00:26] leechampion910823
+🧐
+
+
+[08/27/2023 16:13] pfapostol
+now it looks like it's true
+
+
+[08/29/2023 13:01] leechampion910823
+this audit was fired?
+
+
+[08/29/2023 13:22] kaveyjoe
+rewards on the way
+
+
+[08/29/2023 13:23] leechampion910823
+rewards without reporting result?
+
+
+[08/29/2023 13:30] kaveyjoe
+Result is also on the way
+
+
+[08/29/2023 13:40] 0x11singh99
+how far 🧐
+
+
+[08/29/2023 15:09] 0xkazimm
+maybe this week guess, its not important to me but hope my $17 become $1700 lol
+
+{Reactions}
+👍 
+
+[08/29/2023 15:11] pfapostol
+the same
+
+{Reactions}
+🥹 
+
+[08/29/2023 15:12] nethoxa
+I did see mine was 1.8K in the initial rewards, does someone know if they did change substantially?
+
+
+[08/29/2023 15:13] nethoxa
+someone with the backstage role pls
+
+
+[08/29/2023 22:15] leechampion910823
+where can I find my rewards? I can't find my reports on this contract in C4 website?
+
+
+[08/29/2023 22:37] lsaudit
+awards are being revisited. Results were published, then after some time, they were removed from C4
+
+
+[08/29/2023 22:49] nethoxa
+correct
+
+
+[08/29/2023 23:11] leechampion910823
+it means this audit was gone far way?
+
+
+[08/29/2023 23:19] nethoxa
+nope
+
+
+[08/29/2023 23:19] nethoxa
+it means there was some issue with the judging and they are reviewing it
+
+
+[08/29/2023 23:20] nethoxa
+although they shall come out soon, unless they are re-reviewing ALL the subm again
+
+
+[08/29/2023 23:20] leechampion910823
+oh, got it, thx,
+
+
+[08/29/2023 23:20] nethoxa
+no prob 🙂
+
+
+[08/30/2023 00:40] liveactionllamac4
+🤑 🎉  Awards for **Basin**:
+
+$9,339.71 USDC » @Trust 
+$4,694.79 USDC » @kutu 
+$2,795.94 USDC » @oakcobalt 
+$2,177.78 USDC » @erebus 
+$2,169.89 USDC » @a3yip6 
+$2,152.37 USDC » @Cosine 
+$1,019.61 USDC » @eeyore 
+$986.09 USDC » @qpzm 
+$762.57 USDC » @ptsanev 
+$762.57 USDC » CRIMSON-RAT-REACH ( @escrow, @cergyk, @paspe, @VictoryGod, @🐚xtotem, @imkapadia, @devblixt, @vani, @VanGrim & @0xChuck)
+$543.14 USDC » @LokiThe5th 
+$484.35 USDC » @peanuts 
+$303.89 USDC » @0xSmartContract 
+$271.57 USDC » @pontifex 
+$211.83 USDC » tonisives
+$180.46 USDC » @sces60107 | GimelSec 
+$180.46 USDC » @inspecktor 
+$169.01 USDC » @MohammedRizwan 
+$169.01 USDC » @Qeew 
+$135.79 USDC » @Brenzee 
+$111.57 USDC » @K42 Ψ 
+$81.25 USDC » @0xprinc 
+$76.02 USDC » @SM3_SS 
+$75.99 USDC » @TheSavageTeddy 
+$75.99 USDC » @blackhole 
+$75.99 USDC » @seth_lawson 
+$70.62 USDC » @glcanvas 
+$64.54 USDC » @Rolezn 
+$58.47 USDC » @0xn006e7 
+$58.47 USDC » @lsaudit 
+$58.47 USDC » @JCN 
+$58.47 USDC » @Raihan 
+$25.41 USDC » @mahdiRostami 
+$25.41 USDC » @0xAnah 
+$25.41 USDC » @hunter_w3b 
+$25.41 USDC » @pfapostol 
+$25.41 USDC » @josephdara 
+$17.52 USDC » @8olidity 
+$17.52 USDC » @ziyou- 
+$17.52 USDC » @DanielWang888 
+$17.52 USDC » @0xkazim 
+$17.52 USDC » @zhaojie 
+$17.52 USDC » @ginlee 
+$17.52 USDC » @kaveyjoe 
+$17.52 USDC » @JGcarv 
+$17.52 USDC » @max10afternoon 
+$17.52 USDC » LosPollosHermanos (@scaraven, @lemonkurd, & @jc1)
+$17.52 USDC » @2997ms 
+$17.52 USDC » @Topmark 
+$17.52 USDC » @0xWaitress 
+$17.52 USDC » @QiuhaoLi 
+$17.52 USDC » @Kaysoft 
+$17.52 USDC » radev_sw
+$17.52 USDC » @Deekshith99 
+$17.52 USDC » @alexzoid 
+$17.52 USDC » @te_aut 
+$17.52 USDC » @codegpt 
+$17.52 USDC » @33audits 
+$13.95 USDC » @0x11singh99 
+$7.89 USDC » @Strausses 
+$7.89 USDC » @MIQUINHO 
+$7.89 USDC » DavidGiladi
+$7.89 USDC » @SAAJ 
+$7.89 USDC » @ElCid 
+$7.89 USDC » @SY_S 
+$6.07 USDC » @Santiago Moreno 
+$6.07 USDC » @ravikiranweb3 
+$6.07 USDC » @Jorgect 
+$6.07 USDC » @404Notfound 
+$6.07 USDC » @John 
+$6.07 USDC » @twcctop 
+$6.07 USDC » CyberPunks (@Stryder & @Andrew Prasaath)
+$6.07 USDC » @Eurovickk 
+$6.07 USDC » @Udsen 
+
+🏁 Findings summary
+--------------------------------------—
+High risk findings: 1 unique (6 total)
+Med risk findings: 13 unique (21 total)
+Gas reports: 27 (Best: SM3\_SS)
+QA reports: 56 (Best: 0xprinc)
+Advanced analysis reports: 7 (Best: Trust)
+
+Awards will be distributed on Polygon within the next week. Congratulations all and thanks for your patience!  💸 💸 💸
+
+*Note: If you participated in this audit and don’t see your name on this list, please wait until the report is published and the findings repo is made public to check on your submissions.*
+
+{Reactions}
+🎉 (7) 🅱️ (4) 🅰️ (4) 🇸 (4) 🇮 (4) 🇳 (4) 
+
+[08/30/2023 00:58] 0x11singh99
+Congratulations All
+
+
+[08/30/2023 00:59] 0x11singh99
+Finally after a long time result is out for basin.
+
+
+[08/30/2023 01:15] leechampion910823
+my audit report was removed, lol
+
+
+[08/30/2023 01:18] leechampion910823
+very disappoint
+
+
+[08/30/2023 05:13] olanre_waju
+You got more, congrats
+
+
+[08/30/2023 06:05] nethoxa
+yikes, top 4 and much more. That's something nice to see after getting up
+
+
+[08/30/2023 06:05] nethoxa
+https://tenor.com/view/dace-gif-25608746
+
+{Embed}
+https://tenor.com/view/dace-gif-25608746
+Code4rena - ARCHIVE-Q3-2023 - basin-jul03 [1124366470349066290].txt_Files/dace-09290.png
+
+
+[08/30/2023 06:07] nethoxa
+what a beast is @Trust btw
+
+
+[08/30/2023 06:15] paspe
+Thank you so much to Basin team and c4 judges ❤️
+
+
+[08/30/2023 07:53] a3yip6
+Shoutout to Basin team and all judges🥰 , looking forward to seeing the final report
+
+
+[08/30/2023 08:03] saq_143
+@SM3_SS 
+Weldon
+
+{Reactions}
+❤️ 
+
+[08/30/2023 16:49] 0xarno
+When will we get to see the audit report?
+
+
+[10/05/2023 16:19] thebrittfactor
+[Audit report](https://code4rena.com/reports/2023-07-basin) is now live!
+
+{Reactions}
+❤️ (2) 
+
+==============================================================
+Exported 209 message(s)
+==============================================================
